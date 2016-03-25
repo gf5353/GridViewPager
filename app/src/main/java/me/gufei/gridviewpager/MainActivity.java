@@ -1,6 +1,7 @@
 package me.gufei.gridviewpager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -65,6 +66,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
+        });
+        findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, EmojiActivity.class));
+            }
         });
     }
 
