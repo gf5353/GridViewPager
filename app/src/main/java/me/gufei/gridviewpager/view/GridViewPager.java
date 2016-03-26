@@ -132,7 +132,6 @@ public class GridViewPager extends ViewPager {
 
         @Override
         public void onPageSelected(int position) {
-            Log.d(TAG, "position:" + position);
             if (indicatorView != null) {
                 indicatorView.setSelectedPage(position);
             }

@@ -44,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#0000"
+                android:imeOptions="flagNoExtractUi"
                 android:maxLines="3"
                 android:minHeight="36dp"
                 android:textSize="16sp" />
@@ -70,7 +71,7 @@
         android:layout_height="1dp"
         android:background="#e0e0e0" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/emotion_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -85,11 +86,16 @@
             android:layout_height="1dp"
             android:background="#e0e0e0" />
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
+        <me.gufei.gridviewpager.view.GridViewPager
+            android:id="@+id/myviewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
 
-    </RelativeLayout>
+        <me.gufei.gridviewpager.view.PageIndicatorView
+            android:id="@+id/indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -3,6 +3,7 @@ package me.gufei.gridviewpager.emoji;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -19,12 +20,16 @@ import android.widget.LinearLayout;
  */
 public class EmotionInputDetector {
 
-    private int input_height;
+    private static final String SHARE_PREFERENCE_NAME = "com.dss886.emotioninputdetector";
+    private static final String SHARE_PREFERENCE_TAG = "soft_input_height";
+
     private Activity mActivity;
     private InputMethodManager mInputManager;
+    private SharedPreferences sp;
     private View mEmotionLayout;
     private EditText mEditText;
     private View mContentView;
+    private static int input_height = 0;
 
     private EmotionInputDetector() {
     }
@@ -33,6 +38,10 @@ public class EmotionInputDetector {
         EmotionInputDetector emotionInputDetector = new EmotionInputDetector();
         emotionInputDetector.mActivity = activity;
         emotionInputDetector.mInputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        emotionInputDetector.sp = activity.getSharedPreferences(SHARE_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        if (input_height == 0) {
+            input_height = emotionInputDetector.sp.getInt(SHARE_PREFERENCE_TAG, 400);
+        }
         return emotionInputDetector;
     }
 
@@ -109,7 +118,7 @@ public class EmotionInputDetector {
     private void showEmotionLayout() {
         int softInputHeight = getSupportSoftInputHeight();
         if (softInputHeight == 0) {
-            softInputHeight = input_height != 0 ? input_height : 400;
+            softInputHeight = input_height != 0 ? input_height : sp.getInt(SHARE_PREFERENCE_TAG, 400);
         }
         hideSoftInput();
         mEmotionLayout.getLayoutParams().height = softInputHeight;
@@ -172,6 +181,7 @@ public class EmotionInputDetector {
         }
         if (softInputHeight > 0) {
             input_height = softInputHeight;
+            sp.edit().putInt(SHARE_PREFERENCE_TAG, softInputHeight).apply();
         }
         return softInputHeight;
     }
