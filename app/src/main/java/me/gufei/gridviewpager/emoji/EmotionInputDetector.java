@@ -180,8 +180,10 @@ public class EmotionInputDetector {
             Log.w("EmotionInputDetector", "Warning: value of softInputHeight is below zero!");
         }
         if (softInputHeight > 0) {
-            input_height = softInputHeight;
-            sp.edit().putInt(SHARE_PREFERENCE_TAG, softInputHeight).apply();
+            if (input_height < softInputHeight) {
+                input_height = softInputHeight;
+                sp.edit().putInt(SHARE_PREFERENCE_TAG, softInputHeight).apply();
+            }
         }
         return softInputHeight;
     }

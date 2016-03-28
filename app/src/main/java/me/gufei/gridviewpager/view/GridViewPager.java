@@ -120,6 +120,7 @@ public class GridViewPager extends ViewPager {
                 height = h;
         }
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(height + getPaddingBottom() + getPaddingTop(), MeasureSpec.EXACTLY);
+        Log.d(TAG, "heightMeasureSpec:" + heightMeasureSpec);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
