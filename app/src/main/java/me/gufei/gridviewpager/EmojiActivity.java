@@ -2,6 +2,8 @@ package me.gufei.gridviewpager;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Selection;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Arrays;
@@ -28,7 +31,7 @@ import me.gufei.gridviewpager.view.PageIndicatorView;
  */
 public class EmojiActivity extends AppCompatActivity {
     LinearLayout emotion_layout;
-    ListView list;
+    LinearLayout list;
     EditText edit_text;
     ImageView editText;
     private EmotionInputDetector mDetector;
@@ -41,7 +44,7 @@ public class EmojiActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emoji);
         emotion_layout = (LinearLayout) findViewById(R.id.emotion_layout);
-        list = (ListView) findViewById(R.id.list);
+        list = (LinearLayout) findViewById(R.id.list);
         edit_text = (EditText) findViewById(R.id.edit_text);
         editText = (ImageView) findViewById(R.id.emotion_button);
 
@@ -53,7 +56,7 @@ public class EmojiActivity extends AppCompatActivity {
                 .build();
         long time_start = System.currentTimeMillis();
         Log.d(TAG, "chatEmojis:" + time_start);
-        final List<ChatEmoji> chatEmojis = EmojiUtil.parseData(getBaseContext());
+        List<ChatEmoji> chatEmojis = EmojiUtil.getInstance().getList(getApplicationContext());
         Log.d(TAG, "chatEmojis:" + chatEmojis.size());
         Log.d(TAG, "chatEmojis:" + (System.currentTimeMillis() - time_start));
 
@@ -68,8 +71,21 @@ public class EmojiActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id, int pageIndex) {
-                ChatEmoji emoji = chatEmojis.get(pageIndex);
+                ChatEmoji emoji = (ChatEmoji) parent.getAdapter().getItem(position);
+                SpannableString spannableString = EmojiUtil.getInstance().addFace(getApplicationContext(), emoji.getId(), emoji.getCharacter());
+                edit_text.setText(edit_text.getText().append(spannableString));
+                edit_text.setSelection(edit_text.getText().length());
                 Toast.makeText(getApplicationContext(), emoji.getCharacter(), Toast.LENGTH_LONG).show();
+            }
+        });
+        findViewById(R.id.btn_send).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView textView = new TextView(getBaseContext());
+                String text = edit_text.getText().toString().trim();
+                textView.setText(EmojiUtil.getInstance().getExpressionString(getBaseContext(), text));
+                list.addView(textView);
+                edit_text.setText("");
             }
         });
     }
