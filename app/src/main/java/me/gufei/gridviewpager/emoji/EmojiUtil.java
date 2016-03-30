@@ -114,7 +114,7 @@ public class EmojiUtil {
         return chatEmojis;
     }
 
-    public List<ChatEmoji> getListByConfig(Context context, int page) {
+    public List<ChatEmoji> getListByConfig(Context context, int page, int delRes) {
         List<ChatEmoji> tempList = new ArrayList<>();
         List<ChatEmoji> list = getListByConfig(context);
         Log.d(TAG, "总数量：" + list.size() + "一页：" + page);
@@ -122,7 +122,7 @@ public class EmojiUtil {
             ChatEmoji chatEmoji1 = list.get(i);
             if (i != 0 && i % (page - 1) == 0) {
                 ChatEmoji temp = new ChatEmoji();
-                temp.setId(R.drawable.ic_emotion);
+                temp.setId(delRes);
                 temp.setCharacter("删除");
                 tempList.add(temp);
             }
@@ -137,7 +137,7 @@ public class EmojiUtil {
             for (int i = 0; i < fillSize; i++) {
                 ChatEmoji temp = new ChatEmoji();
                 if (i == fillSize - 1) {
-                    temp.setId(R.drawable.ic_emotion);
+                    temp.setId(delRes);
                     temp.setCharacter("删除");
                 } else {
                     temp.setId(android.R.color.transparent);

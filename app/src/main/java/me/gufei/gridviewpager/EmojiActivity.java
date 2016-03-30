@@ -2,6 +2,7 @@ package me.gufei.gridviewpager;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.Selection;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -62,7 +63,7 @@ public class EmojiActivity extends AppCompatActivity {
         mViewPager = (GridViewPager) findViewById(R.id.myviewpager);
         mViewPager.setIndicator((PageIndicatorView) findViewById(R.id.indicator));
         mViewPager.setColumns(4, 7);
-        List<ChatEmoji> chatEmojis = EmojiUtil.getInstance().getListByConfig(getApplicationContext(), mViewPager.getPageSize());
+        List<ChatEmoji> chatEmojis = EmojiUtil.getInstance().getListByConfig(getApplicationContext(), mViewPager.getPageSize(), R.mipmap.ic_launcher);
         Log.d(TAG, "chatEmojis:" + chatEmojis.size());
         Log.d(TAG, "chatEmojis:" + (System.currentTimeMillis() - time_start));
         mViewPager.setGridViewPagerDataAdapter(new GridViewPagerDataAdapter<ChatEmoji>(chatEmojis) {
@@ -78,20 +79,18 @@ public class EmojiActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(character)) {
                     return;
                 }
-                String text = edit_text.getText().toString();
-                if (emoji.getId() == R.drawable.ic_emotion) {
+                Editable editable = edit_text.getText();
+                String text = editable.toString();
+                int index = edit_text.getSelectionStart();
+                if (emoji.getId() == R.mipmap.ic_launcher) {
                     int delLength = EmojiUtil.getInstance().delEmoji(text);
-                    int index = edit_text.getSelectionStart();
                     if (index >= delLength) {
-                        edit_text.getText().delete(index - delLength, index);
+                        editable.delete(index - delLength, index);
                     }
-                    Toast.makeText(getApplicationContext(), "此处是删除长度：" + delLength, Toast.LENGTH_LONG).show();
                     return;
                 }
                 SpannableString spannableString = EmojiUtil.getInstance().addFace(getApplicationContext(), emoji.getId(), character);
-                edit_text.setText(edit_text.getText().append(spannableString));
-                edit_text.setSelection(edit_text.getText().length());
-                Toast.makeText(getApplicationContext(), emoji.getCharacter(), Toast.LENGTH_LONG).show();
+                editable.insert(index, spannableString);
             }
         });
         findViewById(R.id.btn_send).setOnClickListener(new View.OnClickListener() {
