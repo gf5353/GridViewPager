@@ -1,6 +1,8 @@
 package me.gufei.gridviewpager.view;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -59,6 +61,10 @@ public class GridViewPager extends ViewPager {
         this.indicatorView = indicatorView;
     }
 
+    public int getPageSize() {
+        return rowInOnePage * columnInOnePage;
+    }
+
     public void init() {
         int sizeInOnePage = rowInOnePage * columnInOnePage;//一栏显示总数
         int pageCount = listAll.size() / sizeInOnePage;//划分页数
@@ -87,6 +93,7 @@ public class GridViewPager extends ViewPager {
                 gv.setGravity(Gravity.CENTER);
                 gv.setClickable(true);
                 gv.setFocusable(true);
+                gv.setSelector(new ColorDrawable(Color.TRANSPARENT));
                 mLists.add(gv);
             }
             gv.setNumColumns(columnInOnePage);//动态改变
@@ -106,7 +113,6 @@ public class GridViewPager extends ViewPager {
             adapter.notifyDataSetChanged();
             Log.d(TAG, "notifyDataSetChanged:");
         }
-
     }
 
     @Override

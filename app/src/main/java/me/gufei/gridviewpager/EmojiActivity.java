@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Selection;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -56,13 +57,14 @@ public class EmojiActivity extends AppCompatActivity {
                 .build();
         long time_start = System.currentTimeMillis();
         Log.d(TAG, "chatEmojis:" + time_start);
-        List<ChatEmoji> chatEmojis = EmojiUtil.getInstance().getList(getApplicationContext());
-        Log.d(TAG, "chatEmojis:" + chatEmojis.size());
-        Log.d(TAG, "chatEmojis:" + (System.currentTimeMillis() - time_start));
+
 
         mViewPager = (GridViewPager) findViewById(R.id.myviewpager);
         mViewPager.setIndicator((PageIndicatorView) findViewById(R.id.indicator));
-        mViewPager.setColumns(7, 6);
+        mViewPager.setColumns(4, 7);
+        List<ChatEmoji> chatEmojis = EmojiUtil.getInstance().getListByConfig(getApplicationContext(), mViewPager.getPageSize());
+        Log.d(TAG, "chatEmojis:" + chatEmojis.size());
+        Log.d(TAG, "chatEmojis:" + (System.currentTimeMillis() - time_start));
         mViewPager.setGridViewPagerDataAdapter(new GridViewPagerDataAdapter<ChatEmoji>(chatEmojis) {
             @Override
             public BaseAdapter getGridViewAdapter(List<ChatEmoji> currentList, int pageIndex) {
@@ -72,7 +74,21 @@ public class EmojiActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id, int pageIndex) {
                 ChatEmoji emoji = (ChatEmoji) parent.getAdapter().getItem(position);
-                SpannableString spannableString = EmojiUtil.getInstance().addFace(getApplicationContext(), emoji.getId(), emoji.getCharacter());
+                String character = emoji.getCharacter();
+                if (TextUtils.isEmpty(character)) {
+                    return;
+                }
+                String text = edit_text.getText().toString();
+                if (emoji.getId() == R.drawable.ic_emotion) {
+                    int delLength = EmojiUtil.getInstance().delEmoji(text);
+                    int index = edit_text.getSelectionStart();
+                    if (index >= delLength) {
+                        edit_text.getText().delete(index - delLength, index);
+                    }
+                    Toast.makeText(getApplicationContext(), "此处是删除长度：" + delLength, Toast.LENGTH_LONG).show();
+                    return;
+                }
+                SpannableString spannableString = EmojiUtil.getInstance().addFace(getApplicationContext(), emoji.getId(), character);
                 edit_text.setText(edit_text.getText().append(spannableString));
                 edit_text.setSelection(edit_text.getText().length());
                 Toast.makeText(getApplicationContext(), emoji.getCharacter(), Toast.LENGTH_LONG).show();
@@ -85,7 +101,7 @@ public class EmojiActivity extends AppCompatActivity {
                 String text = edit_text.getText().toString().trim();
                 textView.setText(EmojiUtil.getInstance().getExpressionString(getBaseContext(), text));
                 list.addView(textView);
-                edit_text.setText("");
+                edit_text.getText().clear();
             }
         });
     }

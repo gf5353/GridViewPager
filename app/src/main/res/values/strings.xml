@@ -1,4 +1,33 @@
 <resources>
     <string name="app_name">GridViewPager</string>
     <string name="action_settings">Settings</string>
+
+    <string-array name="emoji_array">
+        <item>em_3</item>
+        <item>em_5</item>
+        <item>em_6</item>
+        <item>em_7</item>
+        <item>em_11</item>
+        <item>em_17</item>
+        <item>em_18</item>
+        <item>em_19</item>
+        <item>em_36</item>
+        <item>em_37</item>
+        <item>em_39</item>
+        <item>em_40</item>
+        <item>em_41</item>
+        <item>em_46</item>
+        <item>em_48</item>
+        <item>em_49</item>
+        <item>em_51</item>
+        <item>em_52</item>
+        <item>em_53</item>
+        <item>em_57</item>
+        <item>em_58</item>
+        <item>em_61</item>
+        <item>em_62</item>
+        <item>em_63</item>
+        <item>em_66</item>
+        <item>em_68</item>
+    </string-array>
 </resources>

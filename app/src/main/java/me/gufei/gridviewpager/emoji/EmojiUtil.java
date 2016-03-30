@@ -10,6 +10,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 
 import java.io.BufferedReader;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -28,6 +30,7 @@ import me.gufei.gridviewpager.R;
  * Created by jishubu1 on 2016/3/25.
  */
 public class EmojiUtil {
+    private String TAG = "EmojiUtil";
     private static EmojiUtil emojiUtil;
     /**
      * 保存于内存中的表情集合
@@ -109,6 +112,127 @@ public class EmojiUtil {
             e.printStackTrace();
         }
         return chatEmojis;
+    }
+
+    public List<ChatEmoji> getListByConfig(Context context, int page) {
+        List<ChatEmoji> tempList = new ArrayList<>();
+        List<ChatEmoji> list = getListByConfig(context);
+        Log.d(TAG, "总数量：" + list.size() + "一页：" + page);
+        for (int i = 0, allSize = list.size(); i < allSize; i++) {
+            ChatEmoji chatEmoji1 = list.get(i);
+            if (i != 0 && i % (page - 1) == 0) {
+                ChatEmoji temp = new ChatEmoji();
+                temp.setId(R.drawable.ic_emotion);
+                temp.setCharacter("删除");
+                tempList.add(temp);
+            }
+            tempList.add(chatEmoji1);
+        }
+
+        if (tempList.size() % (page - 1) != 0) {
+            int allPage = tempList.size() / page + 1;//总页数
+            int allSize = page * allPage;//总表情数量
+            int fillSize = allSize - tempList.size();//需要填充的数量
+            Log.d(TAG, "总页数：" + allPage + "总表情数：" + allSize + "需要填充的数量：" + fillSize);
+            for (int i = 0; i < fillSize; i++) {
+                ChatEmoji temp = new ChatEmoji();
+                if (i == fillSize - 1) {
+                    temp.setId(R.drawable.ic_emotion);
+                    temp.setCharacter("删除");
+                } else {
+                    temp.setId(android.R.color.transparent);
+                    temp.setCharacter("");
+                }
+                tempList.add(temp);
+            }
+        }
+
+        Log.d(TAG, "添加完的总数量：" + tempList.size());
+        return tempList;
+    }
+
+    public List<ChatEmoji> getListByConfig(Context context) {
+        String[] array = context.getResources().getStringArray(R.array.emoji_array);
+        List<String> tempList = Arrays.asList(array);
+        if (chatEmojis.size() > 0) {
+            return filter(tempList, chatEmojis);
+        }
+        List<String> data = getEmojiFile(context);
+        if (data == null) {
+            return null;
+        }
+        ChatEmoji emojEentry;
+        try {
+            for (String str : data) {
+                String[] text = str.split(",");
+                String fileName = text[0]
+                        .substring(0, text[0].lastIndexOf("."));
+                emojiMap.put(text[1], fileName);
+                int resID = context.getResources().getIdentifier(fileName,
+                        "drawable", context.getPackageName());
+                if (resID == 0) {
+                    resID = context.getResources().getIdentifier(fileName,
+                            "mipmap", context.getPackageName());
+                }
+                if (resID != 0) {
+                    emojEentry = new ChatEmoji();
+                    emojEentry.setId(resID);
+                    emojEentry.setCharacter(text[1]);
+                    emojEentry.setFaceName(fileName);
+                    chatEmojis.add(emojEentry);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return filter(tempList, chatEmojis);
+    }
+
+    public int delEmoji(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return 0;
+        }
+        int length = str.length();
+        if (length < 6) {
+            return 1;
+        }
+        String tempStr = str.substring(length - 6, length);
+        Log.d(TAG, "截取的字符串是：" + tempStr);
+        if (isEmoji(tempStr)) {
+            return 6;
+        }
+        if (length >= 7) {
+            tempStr = str.substring(length - 7, length);
+            Log.d(TAG, "截取的字符串是：" + tempStr);
+            if (isEmoji(tempStr)) {
+                return 7;
+            }
+        }
+        return 1;
+    }
+
+    private boolean isEmoji(String emoji) {
+        SpannableString spannableString = new SpannableString(emoji);
+        String zhengze = "\\[em_(\\d+)\\]";
+        Pattern patten = Pattern.compile(zhengze, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = patten.matcher(spannableString);
+        boolean isEmoji = false;
+        while (matcher.find()) {
+            isEmoji = true;
+        }
+        return isEmoji;
+    }
+
+
+    private List<ChatEmoji> filter(List<String> tempList, List<ChatEmoji> list) {
+        List<ChatEmoji> tempEmojis = new ArrayList<>();
+        int i = 0;
+        for (ChatEmoji emoji : list) {
+            if (tempList.contains(emoji.getFaceName())) {
+                tempEmojis.add(emoji);
+            }
+        }
+        return tempEmojis;
     }
 
     /**
