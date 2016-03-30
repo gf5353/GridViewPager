@@ -117,7 +117,7 @@ public class EmojiUtil {
     public List<ChatEmoji> getListByConfig(Context context, int page, int delRes) {
         List<ChatEmoji> tempList = new ArrayList<>();
         List<ChatEmoji> list = getListByConfig(context);
-        Log.d(TAG, "总数量：" + list.size() + "一页：" + page);
+//        Log.d(TAG, "总数量：" + list.size() + "一页：" + page);
         for (int i = 0, allSize = list.size(); i < allSize; i++) {
             ChatEmoji chatEmoji1 = list.get(i);
             if (i != 0 && i % (page - 1) == 0) {
@@ -133,7 +133,7 @@ public class EmojiUtil {
             int allPage = tempList.size() / page + 1;//总页数
             int allSize = page * allPage;//总表情数量
             int fillSize = allSize - tempList.size();//需要填充的数量
-            Log.d(TAG, "总页数：" + allPage + "总表情数：" + allSize + "需要填充的数量：" + fillSize);
+//            Log.d(TAG, "总页数：" + allPage + "总表情数：" + allSize + "需要填充的数量：" + fillSize);
             for (int i = 0; i < fillSize; i++) {
                 ChatEmoji temp = new ChatEmoji();
                 if (i == fillSize - 1) {
@@ -146,8 +146,7 @@ public class EmojiUtil {
                 tempList.add(temp);
             }
         }
-
-        Log.d(TAG, "添加完的总数量：" + tempList.size());
+//        Log.d(TAG, "添加完的总数量：" + tempList.size());
         return tempList;
     }
 
@@ -197,13 +196,13 @@ public class EmojiUtil {
             return 1;
         }
         String tempStr = str.substring(length - 6, length);
-        Log.d(TAG, "截取的字符串是：" + tempStr);
+//        Log.d(TAG, "截取的字符串是：" + tempStr);
         if (isEmoji(tempStr)) {
             return 6;
         }
         if (length >= 7) {
             tempStr = str.substring(length - 7, length);
-            Log.d(TAG, "截取的字符串是：" + tempStr);
+//            Log.d(TAG, "截取的字符串是：" + tempStr);
             if (isEmoji(tempStr)) {
                 return 7;
             }
